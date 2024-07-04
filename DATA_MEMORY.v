@@ -1,0 +1,24 @@
+`define DATA_MEMORY_SIZE 16
+`define DATA_MEMORY_STACK_LENGTH 32
+
+module DATA_MEMORY (
+    input clk,
+    input MEMORY_WRITE_ENABLE,
+    input MEMORY_READ_ENABLE,
+    input [`DATA_MEMORY_SIZE-1:0] MEMORY_ACCESS_ADDR,
+    input [`DATA_MEMORY_SIZE-1:0] MEMORY_WRITE_DATA,
+    output [`DATA_MEMORY_SIZE-1:0] MEMORY_READ_DATA
+);
+reg [`DATA_MEMORY_SIZE-1:0]MEMORY[`DATA_MEMORY_STACK_LENGTH-1:0];
+assign MEMORY_READ_DATA=(MEMORY_READ_ENABLE==1'b1)?(MEMORY[MEMORY_ACCESS_ADDR]):(16'd0);
+
+initial
+ begin
+  $readmemb("dMEM.txt", MEMORY,0,31);
+ end
+
+always @ (posedge clk) begin
+    if (MEMORY_WRITE_ENABLE) MEMORY[MEMORY_ACCESS_ADDR]<=MEMORY_WRITE_DATA;
+end
+    
+endmodule
